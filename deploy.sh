@@ -25,8 +25,9 @@ SERVICE_NAME="${RAILWAY_SERVICE_NAME:-NCAAB-FUSION-SIGNAL}"
 echo "=== [1/4] Linking/Creating Railway service (${SERVICE_NAME} in ${PROJECT_ID} / ${ENVIRONMENT_NAME}) ==="
 if ! railway link --project "$PROJECT_ID" --environment "$ENVIRONMENT_NAME" --service "$SERVICE_NAME" --json >/dev/null 2>&1; then
   echo "Service ${SERVICE_NAME} not yet created — creating isolated service in project ${PROJECT_ID}..."
-  railway link --project "$PROJECT_ID" --environment "$ENVIRONMENT_NAME" --json >/dev/null
-  railway add --service "$SERVICE_NAME" >/dev/null
+  railway link --project "$PROJECT_ID" --environment "$ENVIRONMENT_NAME" --json >/dev/null || true
+  railway add --repo "moghimarash-create/NCAAB-FUSION-SIGNAL" --branch main --service "$SERVICE_NAME" --variables "PORT=8080" --json >/dev/null 2>&1 \
+    || railway add --service "$SERVICE_NAME" --variables "PORT=8080" --json >/dev/null
   railway link --project "$PROJECT_ID" --environment "$ENVIRONMENT_NAME" --service "$SERVICE_NAME" --json >/dev/null
 fi
 
